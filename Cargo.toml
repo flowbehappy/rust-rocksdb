@@ -36,3 +36,8 @@ tempfile = "3.1"
 [patch.crates-io]
 # Remove this when a new version is release. We need to solve rust-lang/cmake-rs#143.
 cmake = { git = "https://github.com/rust-lang/cmake-rs" }
+
+# Release with debug info, to get around the compile error: Undefined symbols ... typeinfo for ...
+# https://stackoverflow.com/a/38804737/1802269
+[profile.release]
+debug = true

@@ -153,18 +153,50 @@ fn build_rocksdb() -> Build {
             zlib_path
         }
     });
+
+    // Add the libs used by PageHouse
+    let titan_path = env::var("DEP_TITAN_ROOT").unwrap();
+
+    println!("cargo:rustc-link-search=native={}", format!("{}/build/PageHouse/src", titan_path.clone()));
+    println!("cargo:rustc-link-search=native={}", format!("{}/build/PageHouse/contrib/libfiu", titan_path.clone()));
+    println!("cargo:rustc-link-search=native={}", format!("{}/build/PageHouse/contrib/fmtlib-cmake", titan_path.clone()));
+    println!("cargo:rustc-link-search=native={}", format!("{}/build/PageHouse/contrib/zstd-cmake", titan_path.clone()));
+    println!("cargo:rustc-link-search=native={}", format!("{}/build/PageHouse/contrib/libcityhash", titan_path.clone()));
+    println!("cargo:rustc-link-search=native={}", format!("{}/build/PageHouse/contrib/cpu_features", titan_path.clone()));
+    println!("cargo:rustc-link-search=native={}", format!("{}/build/PageHouse/contrib/double-conversion", titan_path.clone()));
+    println!("cargo:rustc-link-search=native={}", format!("{}/build/PageHouse/libs/libpocoext", titan_path.clone()));
+    println!("cargo:rustc-link-search=native={}", format!("{}/build/PageHouse/contrib/lz4-cmake", titan_path.clone()));
+    println!("cargo:rustc-link-search=native={}", format!("{}/build/PageHouse/contrib/poco/Util", titan_path.clone()));
+    println!("cargo:rustc-link-search=native={}", format!("{}/build/PageHouse/contrib/poco/Data", titan_path.clone()));
+    println!("cargo:rustc-link-search=native={}", format!("{}/build/PageHouse/contrib/poco/Foundation", titan_path.clone()));
+    println!("cargo:rustc-link-search=native={}", format!("{}/build/PageHouse/contrib/boost-cmake", titan_path.clone()));
+
+    println!("cargo:rustc-link-lib=static=pagehouse");
+    println!("cargo:rustc-link-lib=static=fiu");
+    println!("cargo:rustc-link-lib=static=fmt");
+    // println!("cargo:rustc-link-lib=static=zstd");
+    println!("cargo:rustc-link-lib=static=cityhash");
+    println!("cargo:rustc-link-lib=static=cpu_features");
+    println!("cargo:rustc-link-lib=static=double-conversion");
+    println!("cargo:rustc-link-lib=static=pocoext");
+    // println!("cargo:rustc-link-lib=static=lz4");
+    println!("cargo:rustc-link-lib=static=PocoUtil");
+    println!("cargo:rustc-link-lib=static=PocoData");
+    println!("cargo:rustc-link-lib=static=PocoFoundation");
+    println!("cargo:rustc-link-lib=static=boost_internal");
+
     let dst = cfg
         .define("WITH_GFLAGS", "OFF")
         .register_dep("Z")
         .define("WITH_ZLIB", "ON")
-        .register_dep("BZIP2")
-        .define("WITH_BZ2", "ON")
+        // .register_dep("BZIP2")
+        // .define("WITH_BZ2", "ON")
         .register_dep("LZ4")
         .define("WITH_LZ4", "ON")
         .register_dep("ZSTD")
         .define("WITH_ZSTD", "ON")
-        .register_dep("SNAPPY")
-        .define("WITH_SNAPPY", "ON")
+        // .register_dep("SNAPPY")
+        // .define("WITH_SNAPPY", "ON")
         .define("WITH_TESTS", "OFF")
         .define("WITH_TOOLS", "OFF")
         .build_target("rocksdb")
